@@ -3,7 +3,7 @@
 ## users テーブル
 
 | Column     | Type   | Options     |
-| --------   | ------ | ----------- |
+| ---------- | ------ | ----------- |
 | email      | string | null: false |
 | password   | string | null: false |
 | name       | string | null: false |
@@ -16,13 +16,13 @@
 - has_many :prototypes
 - has_many :comments
 
-## tweets テーブル
+## prototypes テーブル
 
-| Column   | Type   | Options     |
-| -------- | ------ | ----------- |
-| text     | string | null: false |
-| image    | string | null: false |
-| user_id  | string | null: false |
+| Column        | Type   | Options     |
+| ------------- | ------ | ----------- |
+| title         | string | null: false |
+| catch_copy    | text   | null: false |
+| concept       | text   | null: false |
 
 ### Association
 - belongs_to :user
