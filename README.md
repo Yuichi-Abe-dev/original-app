@@ -18,11 +18,13 @@
 
 ## prototypes テーブル
 
-| Column        | Type   | Options     |
-| ------------- | ------ | ----------- |
-| title         | string | null: false |
-| catch_copy    | text   | null: false |
-| concept       | text   | null: false |
+| Column        | Type            | Options     |
+| ------------- | --------------- | ----------- |
+| title         | string          | null: false |
+| catch_copy    | text            | null: false |
+| concept       | text            | null: false |
+| image         | ActiveStorage   | null: false |
+
 
 ### Association
 - belongs_to :user
