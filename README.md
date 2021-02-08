@@ -13,7 +13,7 @@
 
 ### Association
 
-- has_many :tweets
+- has_many :prototypes
 - has_many :comments
 
 ## tweets テーブル
