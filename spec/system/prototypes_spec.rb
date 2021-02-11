@@ -100,6 +100,22 @@ RSpec.describe 'プロトタイプの詳細ページ', type: :system do
     # コメント用のフォームが存在する
     expect(page).to have_selector 'form'
   end
+  it '画像をクリックすると詳細ページへ遷移' do
+    # プロトタイプを投稿したユーザーでサインインする
+    sign_in(@user)
+    # 詳細ページに遷移する
+    find(".card__img").click
+    # 編集する・削除ボタンがないことを確認
+    expect(page).to have_no_content('編集する')
+    expect(page).to have_no_content('削除する')
+    # 詳細ページにプロトタイプの内容が含まれている
+    expect(page).to have_content("#{@prototype.title}")
+    expect(page).to have_content("#{@prototype.catch_copy}")
+    expect(page).to have_content("#{@prototype.concept}")
+    expect(page).to have_selector('img')
+    # コメント用のフォームが存在する
+    expect(page).to have_selector 'form'
+  end
 end
 
 RSpec.describe 'プロトタイプ編集', type: :system do
