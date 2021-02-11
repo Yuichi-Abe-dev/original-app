@@ -135,3 +135,32 @@ RSpec.describe 'プロトタイプ編集', type: :system do
     end
   end
 end
+
+RSpec.describe 'プロトタイプ削除', type: :system do
+  before do
+    @prototype = FactoryBot.create(:prototype)
+  end
+  context 'プロトタイプの削除を行うこと' do
+    it 'ログインしたユーザーは自分が投稿したプロトタイプを削除できる' do
+      # プロトタイプを投稿したユーザーでサインインする
+      visit new_user_session_path
+      fill_in 'メールアドレス', with: @prototype.user.email
+      fill_in 'パスワード（6文字以上）', with: @prototype.user.password
+      find('input[name="commit"]').click
+      expect(current_path).to eq(root_path)
+      # 詳細ページへ遷移する
+      visit prototype_path(@prototype)
+      # 削除ボタンをクリックするとプロトタイプモデルのカウントが減ること確認
+      expect{
+        click_on('削除する')
+      }.to change { Prototype.count }.by(-1)
+      # 削除後にトップページに遷移したことを確認する
+      expect(current_path).to eq(root_path)
+      # トップページに遷移する
+      visit root_path
+      # トップページには先ほど削除した内容のプロトタイプが存在しないことを確認する
+      expect(page).to have_no_content("#{@prototype.title}")
+      expect(page).to have_no_content("#{@prototype.catch_copy}")
+    end
+  end
+end
