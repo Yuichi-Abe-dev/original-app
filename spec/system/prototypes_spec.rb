@@ -243,3 +243,42 @@ RSpec.describe 'プロトタイプ削除', type: :system do
     end
   end
 end
+
+RSpec.describe 'ユーザーの詳細ページへの遷移', type: :system do
+  before do
+    @user = FactoryBot.create(:user)
+    @prototype = FactoryBot.create(:prototype)
+  end
+  context 'ログインしていないユーザーがユーザーの詳細ページヘの遷移ができる' do
+    it 'ログインしていないユーザーがユーザーの詳細ページヘの遷移ができる' do
+      # トップページへ遷移する
+      visit root_path
+      # ユーザー詳細ページへ遷移する
+      find(".card__user").click
+      # ユーザー詳細ページへ遷移したことを確認
+      expect(current_path).to eq(user_path(@prototype.user))
+      # ユーザー情報が表示されていることを確認する
+      expect(page).to have_content("#{@prototype.user.name}")
+      expect(page).to have_content("#{@prototype.user.profile}")
+      expect(page).to have_content("#{@prototype.user.occupation}")
+      expect(page).to have_content("#{@prototype.user.position}")
+    end
+  end
+  context 'ログインしているユーザーがユーザーの詳細ページヘの遷移ができる' do
+    it 'ログインしたユーザーがユーザーの詳細ページヘの遷移ができる' do
+      # サインインする
+      sign_in(@user)
+      # トップページへ遷移する
+      visit root_path
+      # ユーザー詳細ページへ遷移する
+      find(".card__user").click
+      # ユーザー詳細ページへ遷移したことを確認
+      expect(current_path).to eq(user_path(@prototype.user))
+      # ユーザー情報が表示されていることを確認する
+      expect(page).to have_content("#{@prototype.user.name}")
+      expect(page).to have_content("#{@prototype.user.profile}")
+      expect(page).to have_content("#{@prototype.user.occupation}")
+      expect(page).to have_content("#{@prototype.user.position}")
+    end
+  end
+end
