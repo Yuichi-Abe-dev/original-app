@@ -6,6 +6,15 @@ RSpec.describe "プロトタイプ投稿", type: :system do
     @prototype = FactoryBot.create(:prototype)
   end
 
+  context '投稿画面への遷移' do
+    it 'ログインユーザーでないと投稿画面へ遷移ができない' do
+      # トップページに遷移する
+      visit root_path
+      #新規投稿ボタンをクリック
+      expect(page).to have_no_content('New Proto')
+    end
+  end
+
   context '投稿に失敗したとき' do
     it '送る値が空の為、投稿に失敗すること' do
       # サインインする
