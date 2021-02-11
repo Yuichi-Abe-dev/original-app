@@ -88,6 +88,8 @@ RSpec.describe 'ログイン', type: :system do
       expect(
         find('.header').hover
       ).to have_content('New Proto')
+      # ユーザー名が表示されているかの確認
+      expect(page).to have_content(@user.name)
       # サインアップページへ遷移するボタンやログインページへ遷移するボタンが表示されていないことを確認する
       expect(page).to have_no_content('新規登録')
       expect(page).to have_no_content('ログイン')
