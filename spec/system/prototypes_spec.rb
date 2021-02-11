@@ -122,8 +122,19 @@ RSpec.describe 'プロトタイプ編集', type: :system do
   before do
     @prototype = FactoryBot.create(:prototype)
   end
-  context 'ツイート編集ができるとき' do
-    it 'ログインしたユーザーは自分が投稿したツイートの編集ができる' do
+  context '編集画面への遷移' do
+    it '投稿したユーザーでないと編集画面へ遷移ができない' do
+      @user = FactoryBot.create(:user)
+      #プロトタイプを投稿したユーザーとは別のユーザーがサインイン
+      sign_in(@user)
+      # 詳細ページに遷移する
+      visit prototype_path(@prototype)
+      #編集ボタンが存在しないことを確認
+      expect(page).to have_no_content('編集する')
+    end
+  end
+  context 'プロトタイプを編集できるとき' do
+    it 'ログインしたユーザーは自分が投稿したプロトタイプの編集ができる' do
       # プロトタイプを投稿したユーザーでサインインする
       visit new_user_session_path
       fill_in 'メールアドレス', with: @prototype.user.email
@@ -159,6 +170,47 @@ RSpec.describe 'プロトタイプ編集', type: :system do
       # トップページには先ほど変更した内容のプロトタイプが存在することを確認する
       expect(page).to have_content("#{@prototype.title}+編集で追加")
       expect(page).to have_content("#{@prototype.catch_copy}+編集で追加")
+      expect(page).to have_selector('img')
+    end
+  end
+  context 'プロトタイプの編集に失敗したとき' do
+    it 'ログインしたユーザーは自分が投稿したプロトタイプの編集ができる' do
+      # プロトタイプを投稿したユーザーでサインインする
+      visit new_user_session_path
+      fill_in 'メールアドレス', with: @prototype.user.email
+      fill_in 'パスワード（6文字以上）', with: @prototype.user.password
+      find('input[name="commit"]').click
+      expect(current_path).to eq(root_path)
+      # 詳細ページへ遷移する
+      visit prototype_path(@prototype)
+      # 編集ページへ遷移する
+      click_on ('編集する')
+      # すでに投稿済みの内容がフォームに入っていることを確認する
+      expect(
+        find('#prototype_title').value # prototype_titleというid名が付与された要素の値を取得
+      ).to eq(@prototype.title)
+      expect(
+        find('#prototype_catch_copy').value # catch_copyというid名が付与された要素の値を取得
+      ).to eq(@prototype.catch_copy)
+      expect(
+        find('#prototype_concept').value # prototype_conceptというid名が付与された要素の値を取得
+      ).to eq(@prototype.concept)
+      # 投稿内容を編集する
+      fill_in 'prototype_title', with: ""
+      fill_in 'prototype_catch_copy', with: "#{@prototype.catch_copy}+編集で追加"
+      fill_in 'prototype_concept', with: "#{@prototype.concept}+編集で追加"
+      # 編集してもプロトタイプモデルのカウントは変わらないことを確認する
+      expect{
+         find('input[name="commit"]').click
+      }.to change { Prototype.count }.by(0)
+      # 詳細ページにとどまることを確認する
+      expect(current_path).to eq(prototype_path(@prototype))
+      # トップページに遷移する
+      visit root_path
+      # トップページには編集前のプロトタイプが存在することを確認する
+      expect(page).to have_content("#{@prototype.title}")
+      expect(page).to have_content("#{@prototype.catch_copy}")
+      expect(page).to have_selector('img')
     end
   end
 end
