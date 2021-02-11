@@ -51,7 +51,9 @@ RSpec.describe "プロトタイプ投稿", type: :system do
       }.to change { Prototype.count }.by(1)
       # トップページにページに戻ってくることを確認する
       expect(current_path).to eq(root_path)
-      # 送信した画像がブラウザに表示されていることを確認する
+      # 投稿した内容がブラウザに表示されていることを確認する
+      expect(page).to have_content("#{@prototype.title}")
+      expect(page).to have_content("#{@prototype.catch_copy}")
       expect(page).to have_selector('img')
     end
   end
